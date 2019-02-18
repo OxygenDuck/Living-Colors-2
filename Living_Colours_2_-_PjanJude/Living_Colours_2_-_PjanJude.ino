@@ -28,6 +28,11 @@ void InitGlobals()
   enableDebugLog = true;
   Serial.println("READY: globals initialized");
 }
+void InitPins()
+{
+  Serial.println("INIT: Pins");
+  Serial.println("READY: Pins");
+}
 
 void loop() {
   // put your main code here, to run repeatedly:
