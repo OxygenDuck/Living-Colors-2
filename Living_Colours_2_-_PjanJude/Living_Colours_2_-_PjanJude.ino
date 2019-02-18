@@ -4,7 +4,6 @@
 
 //globals
 bool enableDebugLog = true;
-
 void setup() {
   // put your setup code here, to run once:
     InitSerial();
