@@ -61,12 +61,14 @@ void InitDemo()
     {
       //loop to handle one color incrementing
       UpdateColor();
+      delay(color_Delay);
       colorValue = colorValue + 5;
     }
     while (colorValue >= 0)
     {
       //loop to handle one color incrementing
       UpdateColor();
+      delay(color_Delay);
       colorValue = colorValue - 5;
     }
     colorNr++;
@@ -92,7 +94,7 @@ void UpdateColor()
       break;
   }
   PrintLn("Colorvalue : " + (String)colorValue + " > colorNr : " + (String)colorNr);
-  delay(color_Delay);
+
 }
 
 
@@ -110,7 +112,7 @@ void HandleCmy()
 {
   static int m_colorCmyNr = 0;
   colorNr = 0;
-  colorValue = 0;
+  colorValue = 255;
   UpdateColor();
 
   colorNr = 1;
@@ -120,7 +122,7 @@ void HandleCmy()
   UpdateColor();
 
   colorNr = m_colorCmyNr;
-  colorValue = 255;
+  colorValue = 0;
   UpdateColor();
   PrintLn("CMY mode:" + (String)m_colorCmyNr);
   switch (m_colorCmyNr)
