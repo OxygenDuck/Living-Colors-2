@@ -22,7 +22,6 @@ void setup() {
   InitCreator();
   InitGlobals();
   InitPins();
-  InitDemo();
 }
 
 void InitSerial()
@@ -120,12 +119,10 @@ void HandleCmy()
   colorNr = 2;
   UpdateColor();
 
-  PrintLn("CMY mode:" + (String)m_colorCmyNr);
-
   colorNr = m_colorCmyNr;
   colorValue = 255;
   UpdateColor();
-  
+  PrintLn("CMY mode:" + (String)m_colorCmyNr);
   switch (m_colorCmyNr)
   {
     case 0:
