@@ -112,44 +112,29 @@ void HandleCmy()
   static int m_colorCmyNr = 0;
   colorNr = 0;
   colorValue = 0;
+  UpdateColor();
+
+  colorNr = 1;
+  UpdateColor();
+
+  colorNr = 2;
+  UpdateColor();
+
   PrintLn("CMY mode:" + (String)m_colorCmyNr);
+
+  colorNr = m_colorCmyNr;
+  colorValue = 255;
+  UpdateColor();
+  
   switch (m_colorCmyNr)
   {
     case 0:
-      colorNr = 0;
-      colorValue = 255;
-      UpdateColor();
-
-      colorNr = 1;
-      UpdateColor();
-
-      colorNr = 2;
-      UpdateColor();
-
       PrintLn("Cyan");
       break;
     case 1:
-      colorNr = 0;
-      UpdateColor();
-
-      colorNr = 1;
-      colorValue = 255;
-      UpdateColor();
-
-      colorNr = 2;
-      UpdateColor();
       PrintLn("Magenta");
       break;
     default:
-      colorNr = 0;
-      UpdateColor();
-
-      colorNr = 1;
-      UpdateColor();
-
-      colorNr = 2;
-      colorValue = 255;
-      UpdateColor();
       PrintLn("Yellow");
       m_colorCmyNr = -1;
       break;
