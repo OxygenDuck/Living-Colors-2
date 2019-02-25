@@ -32,7 +32,7 @@ void InitSerial()
 
 void InitCreator()
 {
-  Serial.println("Created: Jeremey van Uden, 11feb2019, v0");
+  Serial.println("Created: Jeremey van Uden, Peter Janssen, 11feb2019, v0");
 }
 
 void InitGlobals()
@@ -106,6 +106,12 @@ void HandlePresets()
     HandleCmy();
     delay(500);
   }
+  else if (digitalRead(diPresetRGB) == LOW)
+  {
+    PrintLn("RGB Preset");
+    HandleRgb();
+    delay(500);
+  }
 }
 
 void HandleCmy()
@@ -140,6 +146,40 @@ void HandleCmy()
   }
   m_colorCmyNr++;
 }
+
+void HandleRgb()
+{
+  static int m_colorRgbNr = 0;
+  colorNr = 0;
+  colorValue = 0;
+  UpdateColor();
+
+  colorNr = 1;
+  UpdateColor();
+
+  colorNr = 2;
+  UpdateColor();
+
+  colorNr = m_colorRgbNr;
+  colorValue = 255;
+  UpdateColor();
+  PrintLn("CMY mode:" + (String)m_colorRgbNr);
+  switch (m_colorRgbNr)
+  {
+    case 0:
+      PrintLn("Red");
+      break;
+    case 1:
+      PrintLn("Green");
+      break;
+    default:
+      PrintLn("Blue");
+      m_colorRgbNr = -1;
+      break;
+  }
+  m_colorRgbNr++;
+}
+
 void loop() {
   HandlePresets();
 
