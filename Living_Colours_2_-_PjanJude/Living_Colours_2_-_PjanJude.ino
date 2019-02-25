@@ -12,14 +12,17 @@ int colorValue = 0;
 #define diPresetRGB 7
 #define diPresetCMY 8
 #define aoRed 9
-#define aoGreen 11
+#define aoGreen 10
+#define aoBlue 11
 #define aiPotMeter A0
 
 void setup() {
   // put your setup code here, to run once:
-    InitSerial();
-    InitCreator();
-    InitGlobals();
+  InitSerial();
+  InitCreator();
+  InitGlobals();
+  InitPins();
+  InitDemo();
 }
 
 void InitSerial()
@@ -37,30 +40,39 @@ void InitGlobals()
 {
   Serial.println("INIT: globals");
   enableDebugLog = true;
+  colorNr = 0;
+  colorValue = 0;
   Serial.println("READY: globals initialized");
 }
 
+void InitPins()
+{
+  Serial.println("INIT: Pins");
+  pinMode(diPresetRGB, INPUT_PULLUP);
+  pinMode(diPresetCMY, INPUT_PULLUP);
+  Serial.println("READY: Pins initialized");
+}
 void InitDemo()
 {
   Serial.println("INIT: Demo");
   //loop to handle three colors
-  while(colorNr < 3)
+  while (colorNr < 3)
   {
-   while(colorValue < 256)
-  {
-    //loop to handle one color incrementing
-    UpdateColor();
-    colorValue--;
+    while (colorValue < 256)
+    {
+      //loop to handle one color incrementing
+      UpdateColor();
+      colorValue = colorValue + 5;
+    }
+    while (colorValue >= 0)
+    {
+      //loop to handle one color incrementing
+      UpdateColor();
+      colorValue = colorValue - 5;
+    }
+    colorNr++;
   }
-  while(colorValue >= 0)
-  {
-    //loop to handle one color incrementing
-    UpdateColor();
-    colorValue++;
-  }
-  colorNr++;
-  }
-  
+
   //inside
   //loop to handle one color increment
   Serial.println("READY: Demo");
@@ -68,34 +80,89 @@ void InitDemo()
 
 void UpdateColor()
 {
-  switch(colorNr)
+  switch (colorNr)
   {
-      case 0:
-        analogWrite(aoRed, colorValue);
-       break;
-      case 1:
-        analogWrite(aoGreen, colorValue);
-       break;
-      case 2:
-        analogWrite(aoBlue, colorValue);
-       break;
+    case 0:
+      analogWrite(aoRed, colorValue);
+      break;
+    case 1:
+      analogWrite(aoGreen, colorValue);
+      break;
+    case 2:
+      analogWrite(aoBlue, colorValue);
+      break;
   }
-  PrintLn("Colorvalue : " + (String)colorvalue + " > colorNr : " + (String)colorNr);
+  PrintLn("Colorvalue : " + (String)colorValue + " > colorNr : " + (String)colorNr);
   delay(color_Delay);
 }
 
-void InitPins()
+
+void HandlePresets()
 {
-  Serial.println("INIT: Pins");
-  Serial.println("READY: Pins");
+  if (digitalRead(diPresetCMY) == LOW)
+  {
+    PrintLn("CMY Preset");
+    HandleCmy();
+    delay(500);
+  }
+}
+
+void HandleCmy()
+{
+  static int m_colorCmyNr = 0;
+  colorNr = 0;
+  colorValue = 0;
+  PrintLn("CMY mode:" + (String)m_colorCmyNr);
+  switch (m_colorCmyNr)
+  {
+    case 0:
+      colorNr = 0;
+      colorValue = 255;
+      UpdateColor();
+
+      colorNr = 1;
+      UpdateColor();
+
+      colorNr = 2;
+      UpdateColor();
+
+      PrintLn("Cyan");
+      break;
+    case 1:
+      colorNr = 0;
+      UpdateColor();
+
+      colorNr = 1;
+      colorValue = 255;
+      UpdateColor();
+
+      colorNr = 2;
+      UpdateColor();
+      PrintLn("Magenta");
+      break;
+    default:
+      colorNr = 0;
+      UpdateColor();
+
+      colorNr = 1;
+      UpdateColor();
+
+      colorNr = 2;
+      colorValue = 255;
+      UpdateColor();
+      PrintLn("Yellow");
+      m_colorCmyNr = -1;
+      break;
+  }
+  m_colorCmyNr++;
 }
 void loop() {
-  // put your main code here, to run repeatedly:
+  HandlePresets();
 
 }
 void PrintLn(String a_inputString)
 {
-  if(enableDebugLog == true)
+  if (enableDebugLog == true)
   {
     Serial.println(a_inputString);
   }
