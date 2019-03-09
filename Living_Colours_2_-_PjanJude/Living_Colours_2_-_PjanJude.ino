@@ -6,6 +6,12 @@
 bool enableDebugLog = true;
 int colorNr = 0;
 int colorValue = 0;
+int rgbRedValue = 0;
+int rgbGreenValue = 0;
+int rgbBlueValue = 0;
+
+int buttonState = 0;
+int lastButtonState = 0;
 #define color_Delay 100
 //io
 #define doLedTest 6
@@ -94,7 +100,6 @@ void UpdateColor()
       break;
   }
   PrintLn("Colorvalue : " + (String)colorValue + " > colorNr : " + (String)colorNr);
-
 }
 
 
@@ -149,40 +154,60 @@ void HandleCmy()
 
 void HandleRgb()
 {
-  static int m_colorRgbNr = 0;
-  colorNr = 0;
-  colorValue = 0;
-  UpdateColor();
-
-  colorNr = 1;
-  UpdateColor();
-
-  colorNr = 2;
-  UpdateColor();
-
-  colorNr = m_colorRgbNr;
-  colorValue = 255;
-  UpdateColor();
-  PrintLn("CMY mode:" + (String)m_colorRgbNr);
-  switch (m_colorRgbNr)
+  resetLightValues();
+  int m_rgbCounter = 0;
+  int m_potMeterValue = 0;
+  while (m_rgbCounter < 3)
   {
-    case 0:
-      PrintLn("Red");
+    if (digitalRead(diPresetCMY) == LOW)
+    {
+      buttonState = 0;
+      lastButtonState = 0;
+      resetLightValues();
+      m_rgbCounter = 0;
+      m_potMeterValue = 0;
+      HandleCmy();
       break;
-    case 1:
-      PrintLn("Green");
-      break;
-    default:
-      PrintLn("Blue");
-      m_colorRgbNr = -1;
-      break;
+    }
+    m_potMeterValue = map(analogRead(aiPotMeter), 0, 1019, 0, 255);
+    switch (m_rgbCounter)
+    {
+      case 0:
+        analogWrite(aoRed, m_potMeterValue);
+
+        break;
+      case 1:
+        analogWrite(aoGreen, m_potMeterValue);
+        break;
+      case 2:
+        analogWrite(aoBlue, m_potMeterValue);
+        break;
+    }
+    m_rgbCounter = CheckButtonPress(m_rgbCounter);
   }
-  m_colorRgbNr++;
 }
 
+int CheckButtonPress(int a_rgbCounter)
+{
+  buttonState = digitalRead(diPresetRGB);
+  if (buttonState != lastButtonState) {
+    if (buttonState == LOW) {
+      a_rgbCounter++;
+    }
+    delay(50);
+  }
+  lastButtonState = buttonState;
+  return a_rgbCounter;
+}
+void resetLightValues()
+{
+  colorValue = 0;
+  analogWrite(aoRed, colorValue);
+  analogWrite(aoGreen, colorValue);
+  analogWrite(aoBlue, colorValue);
+}
 void loop() {
   HandlePresets();
-
 }
 void PrintLn(String a_inputString)
 {
