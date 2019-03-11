@@ -28,6 +28,7 @@ void setup() {
   InitCreator();
   InitGlobals();
   InitPins();
+  InitDemo();
 }
 
 void InitSerial()
@@ -65,13 +66,21 @@ void InitDemo()
   {
     while (colorValue < 256)
     {
+      if(checkButtonPressed() == 1)
+      {
+        break;
+      }
       //loop to handle one color incrementing
       UpdateColor();
       delay(color_Delay);
       colorValue = colorValue + 5;
     }
-    while (colorValue >= 0)
+    while (colorValue >= 5)
     {
+      if(checkButtonPressed() == 1)
+      {
+        break;
+      }
       //loop to handle one color incrementing
       UpdateColor();
       delay(color_Delay);
@@ -83,6 +92,21 @@ void InitDemo()
   //inside
   //loop to handle one color increment
   Serial.println("READY: Demo");
+}
+int checkButtonPressed()
+{
+  if (digitalRead(diPresetCMY) == LOW)
+  {
+    return 1;
+  }
+  else if (digitalRead(diPresetRGB) == LOW)
+  {
+    return 1;
+  }
+  else
+  {
+    return 0;
+  }
 }
 
 void UpdateColor()
@@ -171,7 +195,6 @@ void HandleRgb()
     {
       case 0:
         analogWrite(aoRed, m_potMeterValue);
-
         break;
       case 1:
         analogWrite(aoGreen, m_potMeterValue);
