@@ -161,11 +161,8 @@ void HandleRgb()
   {
     if (digitalRead(diPresetCMY) == LOW)
     {
-      buttonState = 0;
-      lastButtonState = 0;
+      resetButtonStates();
       resetLightValues();
-      m_rgbCounter = 0;
-      m_potMeterValue = 0;
       HandleCmy();
       break;
     }
@@ -205,6 +202,11 @@ void resetLightValues()
   analogWrite(aoRed, colorValue);
   analogWrite(aoGreen, colorValue);
   analogWrite(aoBlue, colorValue);
+}
+void resetButtonStates()
+{
+  buttonState = 0;
+  lastButtonState = 0;
 }
 void loop() {
   HandlePresets();
