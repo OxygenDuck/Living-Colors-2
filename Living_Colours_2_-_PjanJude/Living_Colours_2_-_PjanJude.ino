@@ -169,7 +169,7 @@ void HandleRgb()
       HandleCmy();
       break;
     }
-    m_potMeterValue = map(analogRead(aiPotMeter), 0, 1019, 0, 255);
+    m_potMeterValue = map(analogRead(aiPotMeter), 0, 1023, 0, 255);
     switch (m_rgbCounter)
     {
       case 0:
